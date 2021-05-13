@@ -1,0 +1,43 @@
+# Guide to understand this code
+# Parallel jobs: https://circleci.com/docs/2.0/getting-started/?section=getting-started#using-the-workflows-functionality
+
+version: 2
+
+jobs:
+  simple-job: # Job name
+    docker:
+      - image: circleci/python:3.8.8
+    steps:
+      # make repo code availible on the file system
+      - checkout
+      - name: Debug PWD
+        run: pwd
+      - name: Debug Shell
+        run: echo $SHELL
+      - name: Debug Python
+        run: python -V
+
+  build-and-test:
+    docker:
+      # Docker container with Miniconda3 installed
+      - image: continuumio/miniconda3
+
+    steps:
+      - name: Create Conda Environment
+        run: conda create --quiet --name test-env python=3.8.8
+        
+      - name: Install Dependencies
+        run: conda install -n test-env pytest
+
+      - run: conda list -n test-env
+
+      # # This cmd work but 'conda activate' does not
+      # - run: source activate test-environment
+
+workflows:
+  version: 2
+  main: # Work flow name
+    jobs:
+      # These jobs will run in parallel
+      - simple-job
+      - build-and-test

@@ -8,12 +8,12 @@ jobs:
     docker:
       - image: circleci/python:3.8.8
     steps:
+      # make repo code availible in the current folder
+      - checkout
       # Debug pwd (~/project/)
       - run: |
           pwd
           ls -a
-      # make repo code availible in the current folder
-      - checkout
       # Debug shell
       - run: echo $SHELL
       # Debug python
@@ -25,7 +25,8 @@ jobs:
       - image: continuumio/miniconda3
 
     steps:
-      
+      - checkout
+
       # Create conda environment
       - restore_cache:
           keys:
@@ -57,4 +58,4 @@ workflows:
     jobs:
       # These jobs will run in parallel
       - simple-job
-      # - build-and-test
+      - build-and-test
